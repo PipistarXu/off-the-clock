@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Off the Clock — Three Rings</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+<style>
+  html, body { margin: 0; padding: 0; background: #0b0d12; overflow: hidden; }
+  main { display: flex; align-items: center; justify-content: center; min-height: 100vh; line-height: 0; }
+  canvas { display: block; }
+</style>
+</head>
+<body>
+<main></main>
+<script>
+// OFF THE CLOCK — Three Rings
+// Three rings.Outer: Hr; Mid: Min; Inner: Sec
+//One notch at a time, and resets when its unit rolls over.
+
+let lastMinute = -1;
+
+const HOUR_COL = '#fbbf24';
+const MIN_COL = '#5eead4';
+const SEC_COL = '#a78bfa'; 
+
+function setup() {
+  createCanvas(800,800);
+  lastMinute = minute();
+}
+
+function draw() {
+  const h = hour();
+  const m = minute();
+  const s = second();
+
+ if (m !== lastMinute) {
+    lastMinute = m;
+    console.log('minute goes', m);
+  }
+
+  background('#0b0d12');
+  //shift the whole model from left-top corner to the center
+  translate(400, 400);
+
+  const d = 800;
+  ring(d * 0.9, HOUR_COL, (h % 12) / 12);
+  ring(d * 0.7, MIN_COL, m / 60);
+  ring(d * 0.4, SEC_COL, s / 60);
+}
+
+// one ring: faint full circle + the arc that has grown so far
+function ring(d, col, t) {
+  const w = 800 * 0.04;
+
+  noFill();
+  strokeWeight(w);
+
+  // track, make the color of ring lighter when the arc does not go through yet
+  stroke(col + '20');
+  circle(0, 0, d);
+ 
+  if (t <= 0) 
+    return;
+
+  // grown arc
+  stroke(col);
+  arc(0, 0, d, d, -HALF_PI, -HALF_PI + t * TWO_PI);
+}
+</script>
+</body>
+</html>
